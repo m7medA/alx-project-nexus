@@ -1,19 +1,23 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 
 import Error from "./components/Error";
 import AppLayout from "./routes/AppLayout";
-import Loader from "./components/Loader"; // 👈 هنا أضفنا اللودر
+import Loader from "./components/Loader";
 
 // Loaders
 import { loader as queryLoader } from "./pages/SearchResults";
 import { loader as categoriesLoader } from "./pages/CategoriesPage";
 import { loader as categryLoader } from "./pages/CategoryPage";
 import { loader as idLoader } from "./pages/ProductPageDetails";
+import { useDispatch } from "react-redux";
+import { setUserFromStorage } from "./featuers/auth/loginSlice";
 
 // Lazy-loaded pages
 const Home = lazy(() => import("./pages/Home"));
+const SigninPage = lazy(() => import("./featuers/auth/SignInPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
+const LogOutPage = lazy(() => import("./pages/LogOutPage"));
 const SearchResults = lazy(() => import("./pages/SearchResults"));
 const CategoriesPage = lazy(() => import("./pages/CategoriesPage"));
 const CategoryPage = lazy(() => import("./pages/CategoryPage"));
@@ -33,7 +37,9 @@ const router = createBrowserRouter([
     errorElement: <Error />,
     children: [
       { path: "/", element: <Home /> },
+      { path: "/signinpage", element: <SigninPage /> },
       { path: "/loginpage", element: <LoginPage /> },
+      { path: "/logoutpage", element: <LogOutPage /> },
       {
         path: "/searchresults/:query",
         element: <SearchResults />,
@@ -63,6 +69,17 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    const isAuth = localStorage.getItem("isAuth");
+
+    if (user && isAuth === true) {
+      dispatch(setUserFromStorage(JSON.parse(user)));
+    }
+  }, []);
+
   return <RouterProvider router={router} />;
 }
 

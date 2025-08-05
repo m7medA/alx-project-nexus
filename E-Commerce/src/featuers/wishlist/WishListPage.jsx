@@ -8,8 +8,10 @@ import Message from "../../components/Message";
 
 function WishList() {
   const [isLoading, setIsLoading] = useState(true);
-  const wishlistIds = useSelector((store) => store.wishlist.wishlistIds);
   const [products, setProducts] = useState();
+
+  const wishlistIds = useSelector((store) => store.wishlist.wishlistIds);
+  const { isAuth } = useSelector((store) => store.login);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -29,11 +31,24 @@ function WishList() {
     <SpinnerFullPage />
   ) : (
     <section className="layout py-6">
-      <h1 className="mb-12 text-4xl font-semibold tracking-widest text-[#35AFA0]">
-        Your wish List
-      </h1>
-      <Message />
-      {products && <ProductContianer products={products} />}{" "}
+      {isAuth ? (
+        <>
+          <h1 className="mb-12 text-4xl font-semibold tracking-widest text-[#35AFA0]">
+            Your wish List
+          </h1>
+          <Message>Your wishlist is empty 💔</Message>
+          {products && <ProductContianer products={products} />}{" "}
+        </>
+      ) : (
+        <>
+          <h1 className="mb-12 text-4xl font-semibold tracking-widest text-[#35AFA0]">
+            Save Your Favorites
+          </h1>
+          <p className="text-center text-[#3E445A] mt-10 text-3xl">
+            Login to save items to your wishlist and access them anytime!
+          </p>
+        </>
+      )}
     </section>
   );
 }

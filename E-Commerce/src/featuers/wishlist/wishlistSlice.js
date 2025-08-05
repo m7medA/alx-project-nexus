@@ -1,7 +1,24 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import supabase from "../../utils/supabase";
+
+export const updateUserWishlist = createAsyncThunk(
+  "user/updateUserWishlist",
+  async ({ id, wishlist }, { rejectWithValue }) => {
+    const { data, error } = await supabase
+      .from("user")
+      .update({ wishlist })
+      .eq("id", id);
+
+    if (error) return rejectWithValue(error.message);
+    return data[0];
+  }
+);
+
+// safe fallback for user data
+const user = JSON.parse(localStorage.getItem("user")) || {};
 
 const initialState = {
-  wishlistIds: JSON.parse(localStorage.getItem("wishlistIds") || "[]"),
+  wishlistIds: user.wishlist || [],
 };
 
 const wishlistSlice = createSlice({
@@ -9,19 +26,29 @@ const wishlistSlice = createSlice({
   initialState,
   reducers: {
     addToWishlist: (state, action) => {
-      if (!state.wishlistIds.includes(action.payload))
-        state.wishlistIds.push(action.payload);
-      localStorage.setItem("wishlistIds", JSON.stringify(state.wishlistIds));
+      const productId = action.payload;
+      if (!state.wishlistIds.includes(productId)) {
+        state.wishlistIds.push(productId);
+
+        // sync to localStorage
+        const user = JSON.parse(localStorage.getItem("user")) || {};
+        user.wishlist = state.wishlistIds;
+        localStorage.setItem("user", JSON.stringify(user));
+      }
     },
-    deleteFromWishlist: (state, action) => {
+    removeFromWishlist: (state, action) => {
       state.wishlistIds = state.wishlistIds.filter(
         (id) => id !== action.payload
       );
-      localStorage.setItem("wishlistIds", JSON.stringify(state.wishlistIds));
+
+      // sync to localStorage
+      const user = JSON.parse(localStorage.getItem("user")) || {};
+      user.wishlist = state.wishlistIds;
+      localStorage.setItem("user", JSON.stringify(user));
     },
   },
 });
 
-export const { addToWishlist, deleteFromWishlist } = wishlistSlice.actions;
+export const { addToWishlist, removeFromWishlist } = wishlistSlice.actions;
 
 export default wishlistSlice.reducer;

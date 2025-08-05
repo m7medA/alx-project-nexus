@@ -4,20 +4,24 @@ import { fetchById } from "../utils/fetches";
 import StarRating from "../components/StarRating";
 import { priceAfterDiscount } from "../utils/price";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   addToWishlist,
-  deleteFromWishlist,
+  removeFromWishlist,
 } from "../featuers/wishlist/wishlistSlice";
-import { addToCart, DeleteFromCart } from "../featuers/cart/cartSlice";
+import { addToCart, removeFromCart } from "../featuers/cart/cartSlice";
 import Button from "../components/Button";
 
 function ProductPageDetails() {
   const productDetials = useLoaderData();
-  console.log(productDetials);
 
   const wishlistIds = useSelector((store) => store.wishlist.wishlistIds);
   const cartProductIds = useSelector((store) => store.cart.cartProducts);
+  const { isAuth } = useSelector((store) => store.login);
+
+  useEffect(() => {
+    if (!isAuth) setLiked(false);
+  }, [isAuth]);
 
   const [liked, setLiked] = useState(wishlistIds.includes(productDetials.id));
   const [incart, setInCart] = useState(
@@ -32,7 +36,7 @@ function ProductPageDetails() {
     setLiked(newLiked);
     newLiked
       ? dispatch(addToWishlist(productDetials.id))
-      : dispatch(deleteFromWishlist(productDetials.id));
+      : dispatch(removeFromWishlist(productDetials.id));
   }
 
   function handelInCart(e) {
@@ -41,7 +45,7 @@ function ProductPageDetails() {
     setInCart(newInCart);
     newInCart
       ? dispatch(addToCart(productDetials.id))
-      : dispatch(DeleteFromCart(productDetials.id));
+      : dispatch(removeFromCart(productDetials.id));
   }
 
   return (
@@ -99,9 +103,9 @@ function ProductPageDetails() {
           <svg
             onClick={(e) => handelLiked(e)}
             xmlns="http://www.w3.org/2000/svg"
-            fill={liked ? "#D51243" : "none"}
+            fill={liked && isAuth ? "#D51243" : "none"}
             viewBox="0 0 24 24"
-            stroke={liked ? "#D51243" : "currentColor"}
+            stroke={liked && isAuth ? "#D51243" : "currentColor"}
             strokeWidth={1.8}
             className="w-6 h-6 cursor-pointer transition-all duration-300 hover:scale-110 hover:stroke-red-600"
           >
@@ -117,7 +121,7 @@ function ProductPageDetails() {
           </svg>
 
           <Button buttonFunc={(e) => handelInCart(e)}>
-            {incart ? (
+            {incart && isAuth ? (
               <i className="fa-solid fa-circle-minus"></i>
             ) : (
               <i className="fa-solid fa-cart-plus hover:rotate-12 hover:scale-110 hover:text-white transition-transform duration-300"></i>

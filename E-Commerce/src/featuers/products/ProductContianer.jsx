@@ -12,7 +12,7 @@ function ProductContianer({ products }) {
           product={product}
           key={product.id}
           loved={wishlistIds.includes(product.id)}
-          cartProductsId={cartProductsId.includes(product.id)}
+          cartProductsId={cartProductsId?.includes(product.id)}
         />
       ))}
     </ul>

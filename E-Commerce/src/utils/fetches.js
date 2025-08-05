@@ -1,3 +1,5 @@
+import supabase from "./supabase";
+
 const API = "https://dummyjson.com/products";
 
 export const fetchByIds = async (ids) => {
@@ -108,3 +110,15 @@ export const loginAPI = async (email, password) => {
     throw new Error(err);
   }
 };
+
+export async function fetchusers(email, password) {
+  const { data, error } = await supabase
+    .from("user")
+    .select("*")
+    .eq("email", email)
+    .eq("password", password);
+
+  if (error) throw error;
+
+  return data;
+}
