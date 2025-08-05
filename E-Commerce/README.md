@@ -10,7 +10,7 @@ This project was developed as part of my final project at **ALX Nexus**. It is a
 
 ## Live Demo
 
-[Basket 🛒](https://basket-e-commerce-m7meda.netlify.app/)
+[Basket 🛒](https://relaxed-piroshki-0fd751.netlify.app/)
 
 ---
 
