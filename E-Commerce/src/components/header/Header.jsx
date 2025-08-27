@@ -4,7 +4,7 @@ import CategoriesBar from "./CategoriesBar";
 
 function Header() {
   return (
-    <header className="w-full pb-">
+    <header className="w-full pb-2">
       <p className="bg-main text-white py-1 text-center text-xs">
         Due to current circumstances, there may be slight delays in order
         processing
