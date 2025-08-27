@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@tailwind utilities;
+
+:root {
+  --main-color: #35afa0;
+  --font-color: #3e445a;
+}
+
+.bg-main {
+  background-color: var(--main-color);
+}
+
+.text-main {
+  color: var(--main-color);
+}
+
+.border-main {
+  border-color: var(--main-color);
+}
+
+.text-color {
+  color: var(--font-color);
+}
+
+.layout {
+  @apply mx-auto w-[90%] px-6;
+}
+
+.aboutUsImage {
+  background-image: url("/images/aboutUsImage.jpg");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
