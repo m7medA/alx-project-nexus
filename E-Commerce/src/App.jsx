@@ -15,7 +15,7 @@ import { setUserFromStorage } from "./featuers/auth/loginSlice";
 
 // Lazy-loaded pages
 const Home = lazy(() => import("./pages/Home"));
-const SigninPage = lazy(() => import("./featuers/auth/SignInPage"));
+const SignupPage = lazy(() => import("./featuers/auth/SignupPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const LogOutPage = lazy(() => import("./pages/LogOutPage"));
 const SearchResults = lazy(() => import("./pages/SearchResults"));
@@ -37,7 +37,7 @@ const router = createBrowserRouter([
     errorElement: <Error />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/signinpage", element: <SigninPage /> },
+      { path: "/signuppage", element: <SignupPage /> },
       { path: "/loginpage", element: <LoginPage /> },
       { path: "/logoutpage", element: <LogOutPage /> },
       {

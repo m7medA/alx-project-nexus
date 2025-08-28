@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import { authUser } from "../featuers/auth/loginSlice";
@@ -7,19 +7,21 @@ import { useForm } from "react-hook-form";
 function LoginPage() {
   const { isAuth, error, status } = useSelector((store) => store.login);
 
-  const { register, handelSubmit, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
   function onSubmit(data) {
-    console.log(data);
+    dispatch(authUser(data));
 
-    // dispatch(authUser({ email, password }));
-
-    setEmail("");
-    setPassword("");
+    reset();
   }
 
   useEffect(() => {
@@ -30,27 +32,35 @@ function LoginPage() {
     <section className="layout py-6">
       <form
         className="flex flex-col gap-6 w-full max-w-md mx-auto p-6 bg-white rounded-xl shadow-md text-lg text-[#3E445A]"
-        onSubmit={handelSubmit(onSubmit)}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <h2 className="text-2xl font-bold text-center">Login</h2>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="email" className="text-sm font-medium text-[#71778E]">
+          <label
+            htmlFor="email"
+            className={`text-sm font-medium ${errors.email ? "text-red-600" : "text-[#71778E]"}`}
+          >
             Email
           </label>
           <input
             type="email"
             id="email"
             {...register("email", { required: "This field is required !" })}
-            className="bg-[#F3F9F7] rounded-md px-4 py-2 outline-none focus:ring-2 focus:ring-[#35AFA0] transition-all duration-300 shadow-sm"
+            className={`bg-[#F3F9F7] rounded-md px-4 py-2 outline-none focus:ring-2 ${errors.email ? "focus:ring-red-600" : "focus:ring-[#35AFA0]"} transition-all duration-300 shadow-sm`}
             placeholder="example@email.com"
           />
+          {errors.email && (
+            <span className="text-xs font-bold w-max px-2 py-1 text-red-600 bg-red-100 rounded-md ">
+              {errors.email.message}
+            </span>
+          )}
         </div>
 
         <div className="flex flex-col gap-2">
           <label
             htmlFor="password"
-            className="text-sm font-medium text-[#71778E]"
+            className={`text-sm font-medium ${errors.password ? "text-red-600" : "text-[#71778E]"}`}
           >
             Password
           </label>
@@ -58,9 +68,14 @@ function LoginPage() {
             type="password"
             id="password"
             {...register("password", { required: "This field is required !" })}
-            className="bg-[#F3F9F7] rounded-md px-4 py-2 outline-none focus:ring-2 focus:ring-[#35AFA0] transition-all duration-300 shadow-sm"
+            className={`bg-[#F3F9F7] rounded-md px-4 py-2 outline-none focus:ring-2 ${errors.password ? "focus:ring-red-600" : "focus:ring-[#35AFA0]"} transition-all duration-300 shadow-sm`}
             placeholder="••••••••"
           />
+          {errors.password && (
+            <span className="text-xs font-bold w-max px-2 py-1 text-red-600 bg-red-100 rounded-md ">
+              {errors.password.message}
+            </span>
+          )}
         </div>
 
         {error && (
@@ -80,17 +95,19 @@ function LoginPage() {
           </div>
         )}
 
-        <NavLink
-          to="/signinpage"
-          className="text-stone-400 text-sm font-bold border-b-2 border-stone-400 w-max"
-        >
-          sign in
-        </NavLink>
+        <div className="relative h-8">
+          <NavLink
+            to="/signuppage"
+            className={`absolute right-0 text-[#35AFA0] font-semibold px-2 py-1 rounded-md hover:text-white hover:bg-[#35AFA0] transition-all duration-300 w-max ${status === "loading" ? "cursor-not-allowed" : "cursor-pointer"}`}
+          >
+            sign up
+          </NavLink>
+        </div>
 
         <button
           type="submit"
           disabled={status === "loading"}
-          className="bg-[#35AFA0] text-white font-semibold py-2 rounded-md hover:bg-[#35AFA0] transition-colors duration-300 cursor-pointer"
+          className={`bg-[#35AFA0] text-white font-semibold py-2 rounded-md hover:bg-[#35AFA0] transition-colors duration-300 ${status === "loading" ? "cursor-not-allowed" : "cursor-pointer"}`}
         >
           Login
         </button>
