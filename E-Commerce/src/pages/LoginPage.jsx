@@ -2,22 +2,21 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import { authUser } from "../featuers/auth/loginSlice";
+import { useForm } from "react-hook-form";
 
 function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
   const { isAuth, error, status } = useSelector((store) => store.login);
+
+  const { register, handelSubmit, reset } = useForm();
 
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
-  function handelSubmit(e) {
-    e.preventDefault();
-    if (email === "" || password === "") return;
+  function onSubmit(data) {
+    console.log(data);
 
-    dispatch(authUser({ email, password }));
+    // dispatch(authUser({ email, password }));
 
     setEmail("");
     setPassword("");
@@ -31,7 +30,7 @@ function LoginPage() {
     <section className="layout py-6">
       <form
         className="flex flex-col gap-6 w-full max-w-md mx-auto p-6 bg-white rounded-xl shadow-md text-lg text-[#3E445A]"
-        onSubmit={(e) => handelSubmit(e)}
+        onSubmit={handelSubmit(onSubmit)}
       >
         <h2 className="text-2xl font-bold text-center">Login</h2>
 
@@ -42,10 +41,9 @@ function LoginPage() {
           <input
             type="email"
             id="email"
+            {...register("email", { required: "This field is required !" })}
             className="bg-[#F3F9F7] rounded-md px-4 py-2 outline-none focus:ring-2 focus:ring-[#35AFA0] transition-all duration-300 shadow-sm"
             placeholder="example@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
 
@@ -59,10 +57,9 @@ function LoginPage() {
           <input
             type="password"
             id="password"
+            {...register("password", { required: "This field is required !" })}
             className="bg-[#F3F9F7] rounded-md px-4 py-2 outline-none focus:ring-2 focus:ring-[#35AFA0] transition-all duration-300 shadow-sm"
             placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 
