@@ -50,7 +50,6 @@ const signinSlice = createSlice({
       .addCase(addUser.fulfilled, (state, action) => {
         state.isAuth = true;
         state.user = action.payload;
-        console.log(action.payload);
         const { id, name, email, credit, cart, wishlist, gender } =
           action.payload;
         localStorage.setItem(

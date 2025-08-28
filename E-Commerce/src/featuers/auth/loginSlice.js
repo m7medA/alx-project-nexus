@@ -56,6 +56,7 @@ const loginSlice = createSlice({
         );
         localStorage.setItem("isAuth", "true");
         state.status = "idle";
+        state.error = "";
       })
       .addCase(authUser.rejected, (state, action) => {
         state.status = "failed";
