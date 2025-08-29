@@ -1,19 +1,25 @@
-import { useLoaderData } from "react-router-dom";
-import ImageSlide from "../components/ImageSlide";
-import { fetchById } from "../utils/fetches";
-import StarRating from "../components/StarRating";
-import { priceAfterDiscount } from "../utils/price";
+import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+
+import { priceAfterDiscount } from "../utils/price";
 import {
   addToWishlist,
   removeFromWishlist,
 } from "../featuers/wishlist/wishlistSlice";
 import { addToCart, removeFromCart } from "../featuers/cart/cartSlice";
+import { useGetProductByIDQuery } from "../services/apiServices";
+
+import ImageSlide from "../components/ImageSlide";
+import StarRating from "../components/StarRating";
 import Button from "../components/Button";
+import SpinnerFullPage from "../components/SpinnerFullPage";
+import Error from "../components/Error";
 
 function ProductPageDetails() {
-  const productDetials = useLoaderData();
+  const { id } = useParams();
+  const { data: productDetials, error, isLoading } = useGetProductByIDQuery(id);
+  console.log(productDetials);
 
   const wishlistIds = useSelector((store) => store.wishlist.wishlistIds);
   const cartProductIds = useSelector((store) => store.cart.cartProducts);
@@ -23,9 +29,9 @@ function ProductPageDetails() {
     if (!isAuth) setLiked(false);
   }, [isAuth]);
 
-  const [liked, setLiked] = useState(wishlistIds.includes(productDetials.id));
+  const [liked, setLiked] = useState(wishlistIds.includes(productDetials?.id));
   const [incart, setInCart] = useState(
-    cartProductIds.includes(productDetials.id)
+    cartProductIds.includes(productDetials?.id)
   );
 
   const dispatch = useDispatch();
@@ -47,6 +53,10 @@ function ProductPageDetails() {
       ? dispatch(addToCart(productDetials.id))
       : dispatch(removeFromCart(productDetials.id));
   }
+
+  if (isLoading) return <SpinnerFullPage />;
+
+  if (error) return <Error>{error}</Error>;
 
   return (
     <section className="layout py-7 flex flex-col md:flex-row items-start justify-between gap-8">
@@ -131,11 +141,6 @@ function ProductPageDetails() {
       </div>
     </section>
   );
-}
-
-export async function loader({ params }) {
-  const productDetials = fetchById(params.id);
-  return productDetials;
 }
 
 export default ProductPageDetails;

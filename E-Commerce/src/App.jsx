@@ -6,10 +6,6 @@ import AppLayout from "./routes/AppLayout";
 import Loader from "./components/Loader";
 
 // Loaders
-import { loader as queryLoader } from "./pages/SearchResults";
-import { loader as categoriesLoader } from "./pages/CategoriesPage";
-import { loader as categryLoader } from "./pages/CategoryPage";
-import { loader as idLoader } from "./pages/ProductPageDetails";
 import { useDispatch } from "react-redux";
 import { setUserFromStorage } from "./featuers/auth/loginSlice";
 
@@ -37,29 +33,25 @@ const router = createBrowserRouter([
     errorElement: <Error />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/signuppage", element: <SignupPage /> },
+      { path: "/signpage", element: <SignupPage /> },
       { path: "/loginpage", element: <LoginPage /> },
       { path: "/logoutpage", element: <LogOutPage /> },
       {
         path: "/searchresults/:query",
         element: <SearchResults />,
-        loader: queryLoader,
       },
       {
         path: "/categoriespage",
         element: <CategoriesPage />,
-        loader: categoriesLoader,
       },
       {
         path: "/categoryPage/:category",
         element: <CategoryPage />,
-        loader: categryLoader,
       },
       { path: "/allproductspage", element: <AllProductsPage /> },
       {
         path: "/productpagedetials/:id",
         element: <ProductPageDetails />,
-        loader: idLoader,
       },
       { path: "/cartpage", element: <CartPage /> },
       { path: "/wishlist", element: <WishListPage /> },
