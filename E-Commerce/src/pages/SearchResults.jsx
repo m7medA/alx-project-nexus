@@ -1,26 +1,38 @@
-import { useLoaderData, useParams } from "react-router-dom";
-import { fetchBySearchQuery } from "../utils/fetches";
+import { useParams } from "react-router-dom";
+import { useGetBySearchQuery } from "../services/apiServices";
+
 import ProductContianer from "../featuers/products/ProductContianer";
+import SpinnerFullPage from "../components/SpinnerFullPage";
 
 function SearchResults() {
-  const { products } = useLoaderData();
   const { query } = useParams();
 
-  return (
-    <div className="w-[90%] mx-auto p-6">
-      <h1 className="text-xl font-semibold tracking-widest text-[#3E445A] mb-6">
-        Found {products.length} results for:{" "}
-        <span className="text-main text-[#35AFA0]">"{query}"</span>
-      </h1>
+  const { data, isLoading } = useGetBySearchQuery(query);
 
-      <ProductContianer products={products} />
-    </div>
-  );
-}
+  const products = data?.products;
 
-export async function loader({ params }) {
-  const resultProducts = await fetchBySearchQuery(params.query);
-  return resultProducts;
+  if (isLoading) return <SpinnerFullPage />;
+
+  if (products)
+    return (
+      <div className="w-[90%] mx-auto p-6">
+        {products.length > 0 ? (
+          <>
+            <h1 className="text-xl font-semibold tracking-widest text-[#3E445A] mb-6">
+              Found {products.length} results for:{" "}
+              <span className="text-main text-[#35AFA0]">"{query}"</span>{" "}
+            </h1>
+            <ProductContianer products={products} />
+          </>
+        ) : (
+          <h1 className="text-xl font-semibold tracking-widest text-center text-[#3E445A] mb-6">
+            No results found about{" "}
+            <span className="text-main text-[#35AFA0]">"{query}"</span> . Try a
+            different keyword 🔍
+          </h1>
+        )}
+      </div>
+    );
 }
 
 export default SearchResults;

@@ -1,35 +1,26 @@
 import { useSelector } from "react-redux";
-import { fetchByIds } from "../../utils/fetches";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useGetProductByIDsQuery } from "../../services/apiServices";
+
 import ProductContianer from "../products/ProductContianer";
-import SpinnerFullPage from "../../components/SpinnerFullPage";
 import Message from "../../components/Message";
+import Error from "../../components/Error";
+import Spinner from "../../components/Spinner";
 
 function WishList() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [products, setProducts] = useState();
-
   const wishlistIds = useSelector((store) => store.wishlist.wishlistIds);
   const { isAuth } = useSelector((store) => store.login);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setIsLoading(true);
-      if (wishlistIds.length > 0) {
-        const data = await fetchByIds(wishlistIds);
-        setProducts(data);
-      } else {
-        setProducts([]);
-      }
-      setIsLoading(false);
-    };
-    fetchProducts();
-  }, [wishlistIds]);
+  const {
+    data: products,
+    isLoading,
+    error,
+  } = useGetProductByIDsQuery(wishlistIds);
 
-  return isLoading ? (
-    <SpinnerFullPage />
-  ) : (
+  if (isLoading) return <Spinner />;
+
+  if (error) return <Error>{error}</Error>;
+
+  return (
     <section className="layout py-6">
       {isAuth ? (
         <>
