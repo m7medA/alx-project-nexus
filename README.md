@@ -23,7 +23,7 @@ As a culmination of the program, I built a fully functional **E-Commerce web app
 
 ### 🔗 Live Demo
 
-[Basket 🛒](https://relaxed-piroshki-0fd751.netlify.app/)
+[Basket 🛒](https://basket-m.netlify.app/)
 
 ---
 
